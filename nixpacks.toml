@@ -3,10 +3,14 @@
 # (php + php-fpm, composer, nginx, node). Listing php/mbstring/opcache
 # explicitly on top of those collides in the nix profile: nixpkgs' PHP already
 # ships mbstring.so and opcache.so at the same paths.
-nixPkgs = ["...", "php83Extensions.redis", "python311Packages.supervisor", "python311", "ffmpeg"]
+nixPkgs = ["...", "php84Extensions.redis", "python311Packages.supervisor", "python311", "ffmpeg"]
 
 [phases.build]
 cmds = [
+    # Compile front-end assets: /public/build is gitignored and
+    # welcome.blade.php calls @vite(), which 500s without a manifest.
+    "npm run build",
+
     "mkdir -p /etc/supervisor/conf.d/",
     "mkdir -p /run",
     "mkdir -p /var/log",
