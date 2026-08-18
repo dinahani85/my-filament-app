@@ -1,22 +1,9 @@
-providers = ['php', 'node']
-
 [phases.setup]
-nixPkgs = [
-  "php83",
-  "php83Packages.composer",
-  "php83Extensions.redis",
-  "php83Extensions.mbstring",
-  "php83Extensions.opcache",
-  "nodejs_20",
-  "python311Packages.supervisor",
-  "python311",
-  "ffmpeg"
-]
-
-[phases.install]
-cmds = [
-  "composer install --ignore-platform-reqs --no-interaction --prefer-dist --no-dev"
-]
+# Keep "..." — it preserves the packages Nixpacks' own PHP/Node providers add
+# (php + php-fpm, composer, nginx, node). Listing php/mbstring/opcache
+# explicitly on top of those collides in the nix profile: nixpkgs' PHP already
+# ships mbstring.so and opcache.so at the same paths.
+nixPkgs = ["...", "php83Extensions.redis", "python311Packages.supervisor", "python311", "ffmpeg"]
 
 [phases.build]
 cmds = [
