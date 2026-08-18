@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Behind Coolify's Traefik proxy (and Cloudflare in front of it).
+        // Without this Laravel reads the scheme as http and generates http://
+        // asset URLs, which the browser blocks as mixed content on an https page.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
